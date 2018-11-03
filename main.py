@@ -13,12 +13,12 @@ def send(login, password, url, toaddr, msg):
     try:
         server = smtplib.SMTP_SSL(url, 465)
         server.login(login, password)
-        print(Fore.GREEN + '[ OK ] Successful connect to smtp.')
+        print('[ ' + Fore.GREEN + 'OK' + Style.RESET_ALL + ' ] ' + 'Successful connect to smtp.')
         server.sendmail(login, toaddr, msg.as_string())
-        print(Fore.GREEN + '[ OK ] Successful Email sent.')
+        print('[ ' + Fore.GREEN + 'OK' + Style.RESET_ALL + ' ] ' + 'Successful Email sent.')
         server.quit()
     except:
-        print(Fore.RED + '[ ERROR ] Could not connect to smtp.')
+        print('[ ' + Fore.RED + 'OK' + Style.RESET_ALL + ' ] ' + 'Could not connect to smtp.')
 
 def poll():
     """опрос пользователя и отправка писем"""
@@ -65,7 +65,7 @@ def work_with_args():
     body = text[4]
     msg['From'] = text[0]
     msg.attach(MIMEText(text[4], 'plain'))
-    print(Fore.GREEN + '[ OK ] Successful read.' + Style.RESET_ALL)
+    print('[ ' + Fore.GREEN + 'OK' + Style.RESET_ALL + ' ] ' + 'Successful read.')
     send(login, password, url, toaddr, msg) # отправить письмо учитывая содержимое конфигурационного файла
 
 def main():
