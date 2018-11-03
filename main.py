@@ -8,30 +8,31 @@ from sys import argv
 
 cfgSettings = []
 
-def send_mail():
+def send(login, password, url, toaddr, msg):
     """отправка писем"""
+    try:
+        server = smtplib.SMTP_SSL(url, 465)
+        server.login(login, password)
+        print(Fore.GREEN + '[ OK ] Successful connect to smtp.')
+        server.sendmail(login, toaddr, msg.as_string())
+        print(Fore.GREEN + '[ OK ] Successful Email sent.')
+        server.quit()
+    except:
+        print(Fore.RED + '[ ERROR ] Could not connect to smtp.')
+
+def poll():
+    """опрос пользователя и отправка писем"""
     login = input('Login: ')    # опрос пользователя логин почты с которой отправлять письма
     password = getpass()    # пароль почты с которой отправлять письма
     toaddr = input('Receiver: ')    # кому отправлять письма
     url = 'smtp.gmail.com'  # url smtp
 
     msg = MIMEMultipart()
-    # msg['Subject'] = 'Title'
     msg['Subject'] = input('Email title: ') # title
     body = input('Letter:\n')   # содержание письма
     msg['From'] = login # от кого
     msg.attach(MIMEText(body, 'plain'))
-
-    try:
-        server = smtplib.SMTP_SSL(url, 465) # smtp = url, port = 465
-        server.login(login, password)
-        print(Fore.GREEN + '[ OK ] Successful connect to smtp.')    # log message
-        server.sendmail(login, toaddr, msg.as_string()) # отправить письмо
-        print(Fore.GREEN + '[ OK ] Successful Email sent.') # log message
-        server.quit()
-    except: # если ошибка
-        print(Fore.RED + '[ ERROR ] Could not connect to smtp.')    # не удалось подключиться к smtp
-
+    send(login, password, url, toaddr, msg)
     global cfgSettings
     cfgSettings = [login, password, toaddr, msg['Subject'], body]   #   запись в переменную всех настроек
 
@@ -52,33 +53,27 @@ def arg():
     args = argv[1:]
     return args
 
+def work_with_args():
+    url = 'smtp.gmail.com'
+    msg = MIMEMultipart()
+    with open(arg()[0], 'rb') as cfgFile:   # открыть конфигурационный файл
+        text = load(cfgFile)
+    login = text[0]
+    password = text[1]
+    toaddr = text[2]
+    msg['Subject'] = text[3]
+    body = text[4]
+    msg['From'] = text[0]
+    msg.attach(MIMEText(text[4], 'plain'))
+    print(Fore.GREEN + '[ OK ] Successful read.' + Style.RESET_ALL)
+    send(login, password, url, toaddr, msg) # отправить письмо учитывая содержимое конфигурационного файла
+
 def main():
-    send_mail()
-    cfg()
+    if arg() != []: # если в аргументах что то есть
+        work_with_args()
+    else:
+        poll()
+        cfg()
 
 if __name__ == '__main__':
-    arguments = arg()   # запись всех аргументов что были переданны в переменную arguments
-    if arguments != []: # если в аргументах что то есть
-        url = 'smtp.gmail.com'
-        msg = MIMEMultipart()
-        with open(arguments[0], 'rb') as cfgFile:
-            text = load(cfgFile)
-        login = text[0]
-        password = text[1]
-        toaddr = text[2]
-        msg['Subject'] = text[3]
-        body = text[4]
-        msg['From'] = text[0]
-        msg.attach(MIMEText(text[4], 'plain'))
-        print(Fore.GREEN + '[ OK ] Successful read.' + Style.RESET_ALL)
-        try:
-            server = smtplib.SMTP_SSL(url, 465)
-            server.login(login, password)
-            print(Fore.GREEN + '[ OK ] Successful connect to smtp.')
-            server.sendmail(login, toaddr, msg.as_string())
-            print(Fore.GREEN + '[ OK ] Successful Email sent.')
-            server.quit()
-        except:
-            print(Fore.RED + '[ ERROR ] Could not connect to smtp.')
-    else:   # если в аргументах нечего нет тогда обычный запуск
-        main()
+    main()
