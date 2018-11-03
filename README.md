@@ -1,0 +1,3 @@
+RUS: Вы можете запустить программу вот так: python3 main.py и после отправки письма вам предложат создать конфигурационный файл, если вы его создали - вы можете запустить программу с аргументами и в аргументах указать имя конфигурационного файла: python3 main.py cfg.bin (чтобы отправлять письма с большей скоростью)
+
+ENG: You can run the program like this: python3 main.py and after sending the letter you will be asked to create a configuration file, if you created it - you can run the program with arguments and specify the name of the configuration file in the arguments: python3 main.py cfg.bin (to send letters with greater speed)
