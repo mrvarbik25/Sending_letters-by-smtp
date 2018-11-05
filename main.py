@@ -13,12 +13,13 @@ def send(login, password, url, toaddr, msg):
     try:
         server = smtplib.SMTP_SSL(url, 465)
         server.login(login, password)
-        print('[ ' + Fore.GREEN + 'OK' + Style.RESET_ALL + ' ] ' + 'Successful connect to smtp.')
+        print('[ ', Fore.GREEN + 'OK', ' ] ', 'Successful connect to smtp.', sep=Style.RESET_ALL)
         server.sendmail(login, toaddr, msg.as_string())
-        print('[ ' + Fore.GREEN + 'OK' + Style.RESET_ALL + ' ] ' + 'Successful Email sent.')
+        print('[ ', Fore.GREEN + 'OK', ' ] ', 'Successful Email sent.', sep=Style.RESET_ALL)
         server.quit()
     except:
-        print('[ ' + Fore.RED + 'OK' + Style.RESET_ALL + ' ] ' + 'Could not connect to smtp.')
+        print('[ ', Fore.RED + 'OK', ' ] ', 'Could not connect to smtp.', sep=Style.RESET_ALL)
+        raise SystemExit
 
 def poll():
     """опрос пользователя и отправка писем"""
@@ -38,12 +39,12 @@ def poll():
 
 def cfg():
     """создает файл с настройками"""
-    choice = input(Style.RESET_ALL + 'Сreate a configuration file? ' + Back.GREEN + '[Y]es' + Style.RESET_ALL + ' or '+ Back.RED + '[N]o?' + Style.RESET_ALL + ' ').lower() # опрос, записать в файл конфигурацию?
+    choice = input('Сreate a configuration file? ' + Back.GREEN + '[Y]es' + Style.RESET_ALL + ' or ' + Back.RED + '[N]o?' + Style.RESET_ALL + ' ').lower() # опрос, записать в файл конфигурацию?
     if choice == 'y':
         cfgFile = open('cfg.bin', 'wb') # создаем бинарный файл настроек
         dump(cfgSettings, cfgFile)  # через pickle записываем в него переменную cfgSettings
         cfgFile.close()
-        print(Fore.GREEN + '[ OK ] Successfully settings written to configuration file. \'cfg.bin\'' + Style.RESET_ALL)
+        print('[ ', Fore.GREEN + 'OK', ' ] ', 'Successfully settings written to configuration file \'cfg.bin\'', sep=Style.RESET_ALL)
     elif choice == 'n':
         raise SystemExit    # выход
 
@@ -65,7 +66,7 @@ def work_with_args():
     body = text[4]
     msg['From'] = text[0]
     msg.attach(MIMEText(text[4], 'plain'))
-    print('[ ' + Fore.GREEN + 'OK' + Style.RESET_ALL + ' ] ' + 'Successful read.')
+    print('[ ', Fore.GREEN + 'OK', ' ] ', 'Successful read.', sep=Style.RESET_ALL)
     send(login, password, url, toaddr, msg) # отправить письмо учитывая содержимое конфигурационного файла
 
 def main():
